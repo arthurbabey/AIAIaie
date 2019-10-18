@@ -10,8 +10,10 @@ import numpy as np
 def least_squares(y, tx):
     """calculate the least squares."""
     # ***************************************************
-    # INSERT YOUR CODE HERE
-    # least squares: TODO
-    # returns mse, and optimal weights
+    a = np.matmul(np.transpose(tx),tx)
+    b = np.matmul(np.transpose(tx),y)
+    w = np.linalg.solve(a,b)
+    MSE = compute_loss(y, tx, w)
+    return MSE, w
     # ***************************************************
     raise NotImplementedError
