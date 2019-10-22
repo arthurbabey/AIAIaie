@@ -1,7 +1,7 @@
 from costs import compute_mse
 from ridge_regression import ridge_regression
 from build_polynomial import build_poly
-
+import numpy as np
 
 
 def build_k_indices(y, k_fold, seed):
@@ -24,8 +24,8 @@ def cross_validation(y, x, k_indices, k, lambda_, degree):
     x_test = x[k_indices[0]]
     y_test = y[k_indices[0]]
     
-    x_train = np.reshape(x[k_indices[1:k]],len(x[k_indices[1]])*(k-1))
-    y_train = np.reshape(y[k_indices[1:k]],len(y[k_indices[1]])*(k-1))
+    x_train = np.reshape(x[k_indices[1:k]], (len(x[k_indices[1]])*(k-1),x.shape[1]))
+    y_train = np.reshape(y[k_indices[1:k]], len(y[k_indices[1]])*(k-1))
     
 
     # ***************************************************
