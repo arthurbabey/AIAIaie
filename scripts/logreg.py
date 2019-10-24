@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def sigmoid(t):
     """apply sigmoid function on t."""
     # ***************************************************
@@ -7,7 +10,7 @@ def sigmoid(t):
     # ***************************************************
     
     
-    def calculate_loss(y, tx, w):
+def calculate_loss(y, tx, w):
     """compute the cost by negative log likelihood."""
     # ***************************************************    
     
@@ -17,17 +20,17 @@ def sigmoid(t):
 
     
     
-    def calculate_gradient(y, tx, w):
+def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
     # ***************************************************
     
-    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w)) - y)
+    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)
 
     # ***************************************************
 
     
     
-    def learning_by_gradient_descent(y, tx, w, gamma):
+def learning_by_gradient_descent(y, tx, w, gamma):
     """
     Do one step of gradient descen using logistic regression.
     Return the loss and the updated w.
@@ -72,7 +75,7 @@ def calculate_hessian(y, tx, w):
     
     
     
-    def logistic_regression(y, tx, w):
+def logistic_regression(y, tx, w):
     """return the loss, gradient, and hessian."""
     # ***************************************************
     # INSERT YOUR CODE HERE
@@ -115,15 +118,13 @@ def penalized_logistic_regression(y, tx, w, lambda_):
     # INSERT YOUR CODE HERE
     # return loss, gradient, and hessian: TODO
     
-    gradient = calculate_gradient(y, tx, w)
-    hessian = calculate_hessian(y, tx, w)
-    loss = calculate_loss(y, tx, w) - lambda_*(np.linalg.norm(w)**2)
+    gradient = calculate_gradient(y, tx, w)+lambda_*w
+    #hessian = calculate_hessian(y, tx, w)
+    loss = calculate_loss(y, tx, w)
     
-    return loss, gradient, hessian
+    return loss, gradient#, hessian
     
     # ***************************************************
-
-
 
 
 def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
@@ -135,7 +136,7 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
     # INSERT YOUR CODE HERE
     # return loss, gradient: TODO
     
-    loss, gradient, hessian = penalized_logistic_regression(y, tx, w, lambda_)
+    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_)
     # ***************************************************
     #raise NotImplementedError
     # ***************************************************
