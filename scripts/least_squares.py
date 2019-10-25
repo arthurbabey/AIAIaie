@@ -5,6 +5,7 @@ Least Square
 """
 
 import numpy as np
+from costs import compute_mse
 
 
 def least_squares(y, tx):
@@ -13,7 +14,7 @@ def least_squares(y, tx):
     a = np.matmul(np.transpose(tx),tx)
     b = np.matmul(np.transpose(tx),y)
     w = np.linalg.solve(a,b)
-    MSE = compute_loss(y, tx, w)
+    MSE = compute_mse(y, tx, w)
     return MSE, w
     # ***************************************************
     raise NotImplementedError
