@@ -1,4 +1,5 @@
 import numpy as np
+from helpers import batch_iter
 
 
 def sigmoid(t):
@@ -10,11 +11,11 @@ def sigmoid(t):
     # ***************************************************
     
     
-def calculate_loss(y, tx, w):
+def calculate_lossreg(y, tx, w):
     """compute the cost by negative log likelihood."""
     # ***************************************************    
     
-    return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)
+    return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)/len(y)
     
     # ***************************************************
 
@@ -24,7 +25,7 @@ def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
     # ***************************************************
     
-    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)
+    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)/len(y)
 
     # ***************************************************
 
@@ -38,7 +39,7 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     # ***************************************************
     # INSERT YOUR CODE HERE
     # compute the cost: TODO
-    loss = calculate_loss(y, tx, w)
+    loss = calculate_lossreg(y, tx, w)
 
     # ***************************************************
     
@@ -54,6 +55,29 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     # ***************************************************
 
     return loss, w
+
+
+
+def logistic_regression_SGD(y, tx, initial_w, batch_size, gamma):
+    """Stochastic gradient descent algorithm."""
+    # ***************************************************
+    w = initial_w
+    gradient=0
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
+        gradient += calculate_gradient(minibatch_y, minibatch_tx, w)
+    gradient = gradient/batch_size
+    loss = calculate_lossreg(y, tx, w)
+
+    # ***************************************************
+    
+    w = w-gamma*gradient
+    
+    # ***************************************************
+    
+    return loss, w
+
+
+
 
 
 def calculate_hessian(y, tx, w):
