@@ -15,7 +15,7 @@ def calculate_lossreg(y, tx, w):
     """compute the cost by negative log likelihood."""
     # ***************************************************    
     
-    return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)/len(y)
+    return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)
     
     # ***************************************************
 
@@ -25,7 +25,7 @@ def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
     # ***************************************************
     
-    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)/len(y)
+    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)
 
     # ***************************************************
 
@@ -63,10 +63,13 @@ def logistic_regression_SGD(y, tx, initial_w, batch_size, gamma):
     # ***************************************************
     w = initial_w
     gradient=0
+    loss = 0
     for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-        gradient += calculate_gradient(minibatch_y, minibatch_tx, w)
+        gradient = calculate_gradient(minibatch_y, minibatch_tx, w)
+        loss = calculate_lossreg(minibatch_y, minibatch_tx, w)
     gradient = gradient/batch_size
-    loss = calculate_lossreg(y, tx, w)
+    loss = loss/batch_size
+    
 
     # ***************************************************
     
