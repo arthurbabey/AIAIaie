@@ -3,6 +3,18 @@
 
 # Useful starting lines
 'exec(%matplotlib inline)'
+import os
+clear = lambda: os.system('clear') #on Linux System
+clear()
+
+try:
+    from IPython import get_ipython
+    #get_ipython().magic('clear')
+    get_ipython().magic('reset -f')
+except:
+    pass
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import math as m
@@ -18,6 +30,9 @@ from least_squares import *
 from ridge_regression import *
 #from logreg import *
 
+
+print("\n",'********************************************')
+
 #%%Import
 DATA_TRAIN_PATH = '/Users/benoithohl/Desktop/epfl/master_epfl/Ma3/Machine_learning/AIAIaie/data/train.csv' # TODO: download train data and supply path here 
 y, tX, ids = load_csv_data(DATA_TRAIN_PATH)
@@ -27,6 +42,7 @@ print('Data loaded')
 Data = remove_features_with_too_many_missing_values(tX,0.66)
 Data = replace_missing_values_with_global_mean(Data)
 ZData = Z_score_of_each_feature(Data)
+y = change_negativeOnes_into_Zeros_in_y(y)
 print('Data matrix ready')
 
 #%% parameters setting
@@ -43,6 +59,7 @@ print('parameters set',"\n")
 losses, w = gradient_descent(trainy, trainx, initial_w, max_iters, gamma)
 weights = np.asarray(w)[-1,:]
 y_pred = predict_labels(weights,validationx)
+y_pred = change_negativeOnes_into_Zeros_in_y(y_pred)
 performance_gradient_descent = calculate_classification_accuracy(validationy, y_pred)
 print('GD done')
 
@@ -50,6 +67,7 @@ print('GD done')
 losses, w = stochastic_gradient_descent(trainy, trainx, initial_w,batch_size, max_iters, gamma)
 weights = np.asarray(w)[-1,:]
 y_pred = predict_labels(weights,validationx)
+y_pred = change_negativeOnes_into_Zeros_in_y(y_pred)
 performance_sochastic_gradient_descent = calculate_classification_accuracy(validationy, y_pred)
 print('SGD done')
 
@@ -57,6 +75,7 @@ print('SGD done')
 losses, w = least_squares(trainy, trainx)
 weights = np.asarray(w)
 y_pred = predict_labels(weights,validationx)
+y_pred = change_negativeOnes_into_Zeros_in_y(y_pred)
 performance_least_square = calculate_classification_accuracy(validationy, y_pred)
 print('Least-Square done')
 
@@ -64,6 +83,7 @@ print('Least-Square done')
 w = ridge_regression(trainy, trainx, lambda_)
 weights = np.asarray(w)
 y_pred = predict_labels(weights,validationx)
+y_pred = change_negativeOnes_into_Zeros_in_y(y_pred)
 performance_ridge = calculate_classification_accuracy(validationy, y_pred)
 print('Ridge done')
 # =============================================================================
@@ -100,4 +120,4 @@ print('performance_ridge: ',performance_ridge)
 
 
 
-print("\n", '***************************************************************************')
+print("\n",'********************************************')
