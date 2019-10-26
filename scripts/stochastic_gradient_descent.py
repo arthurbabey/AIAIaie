@@ -10,7 +10,6 @@ def compute_stoch_gradient(y, tx, w):
     error = y-np.matmul(tx,w)
     return -1/len(y)*np.matmul(np.transpose(tx),error)
     # ***************************************************
-    raise NotImplementedError
 
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
     """
