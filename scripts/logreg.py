@@ -136,7 +136,7 @@ def running_gradient(y, tx, lambda_, method='log'):
     """
     # ***************************************************
     batch_size = 1000
-    max_iter = 10000
+    max_iter = 1000
     gamma = 0.01
     threshold = 1e-8
     losses = []
