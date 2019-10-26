@@ -1,8 +1,7 @@
 import numpy as np
 
 
-
-def compute_loss(y, tx, w):
+def compute_mse(y, tx, w):
     """Calculate the loss with MSE.
     """
     # ***************************************************
