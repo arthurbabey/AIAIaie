@@ -6,7 +6,7 @@ import time
 def sigmoid(t):
     """apply sigmoid function on t."""
     # ***************************************************
-    return np.exp(t) / (1 + np.exp(t))
+    return 1 / (1 + np.exp(-t))
     # ***************************************************
     
     
@@ -120,7 +120,6 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_,batch_size):
     """
     # ***************************************************
     loss, gradient = penalized_logistic_regression(y, tx, w, lambda_,batch_size)
-    
     w = w - gamma*gradient
 
     return loss, w
@@ -135,8 +134,8 @@ def running_gradient(y, tx, lambda_, method='log'):
     Return the loss and final weights.
     """
     # ***************************************************
-    batch_size = 1
-    max_iter = 100
+    batch_size = 32
+    max_iter = 1000
     gamma = 0.01
     threshold = 1e-8
     losses = []
