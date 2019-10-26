@@ -1,5 +1,6 @@
 import numpy as np
 from helpers import batch_iter
+import time
 
 
 def sigmoid(t):
@@ -33,7 +34,7 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     # ***************************************************
     loss = calculate_losslog(y, tx, w)
     gradient = calculate_gradient(y, tx, w)
-
+    
     w = w - gamma*gradient
     
     return loss, w
@@ -108,7 +109,6 @@ def penalized_logistic_regression(y, tx, w, lambda_,batch_size):
         loss = calculate_loss(minibatch_y, minibatch_tx, w)
     gradient = gradient/batch_size
     loss = loss/batch_size
-    
     return loss, gradient
     # ***************************************************
 
@@ -135,8 +135,8 @@ def running_gradient(y, tx, lambda_, method='log'):
     Return the loss and final weights.
     """
     # ***************************************************
-    batch_size = 1000
-    max_iter = 1000
+    batch_size = 1
+    max_iter = 100
     gamma = 0.01
     threshold = 1e-8
     losses = []
@@ -152,7 +152,9 @@ def running_gradient(y, tx, lambda_, method='log'):
         if method == 'newton':
             loss, w = learning_by_newton_method(y, tx, w, gamma)
         # log info
+
         if iter % 100 == 0:
+            #print(w)
             print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         # converge criterion
         losses.append(loss)
