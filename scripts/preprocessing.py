@@ -19,7 +19,7 @@ def remove_features_with_too_many_missing_values(tX,proportion):
             delete_ind = np.append(delete_ind,feature_number)
 
     delete_ind = np.asarray(delete_ind)
-    #ajout de cette pour eviter problème si le array est vide 
+    #ajout de cette pour eviter problème si le array est vide
 
     delete_ind = delete_ind.astype(int)
     data_removed_features = np.delete(data_removed_features,delete_ind, axis =1)
@@ -58,3 +58,13 @@ def Z_score_of_each_feature(tX):
         for sample_number in range(0,len(tX[:,0])):
             Standardized_data[sample_number,feature_number] = (Standardized_data[sample_number,feature_number] - mean_) / std_
     return Standardized_data
+
+
+def preprocess_(tX, y, threshold):
+
+    Data = remove_features_with_too_many_missing_values(tX,threshold)
+    Data = replace_missing_values_with_global_mean(Data)
+    Data = Z_score_of_each_feature(Data)
+    y[y == -1] = 0
+
+    return Data, y
