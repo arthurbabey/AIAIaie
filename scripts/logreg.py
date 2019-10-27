@@ -126,7 +126,7 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
 
 
     
-def running_gradient(y, tx, lambda_, method='log'):
+def running_gradient(y, tx, w, lambda_, method='log'):
     """
     run gradient descent, using logistic regression, 
     penalized log regression or newton method.
@@ -134,7 +134,7 @@ def running_gradient(y, tx, lambda_, method='log'):
     """
     # ***************************************************
     max_iter = 10000                              
-    gamma = 1e-4
+    gamma = 0.01  
     threshold = 1e-8
     losses = []
     
@@ -161,7 +161,7 @@ def running_gradient(y, tx, lambda_, method='log'):
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
            
-    return loss, w
+    return w
     # ***************************************************
 
 

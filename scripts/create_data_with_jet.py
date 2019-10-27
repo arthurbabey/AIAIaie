@@ -5,7 +5,7 @@
 import numpy as np
 from ridge_regression import *
 from preprocessing import *
-from proj1_helpers import *
+from helpers import *
 
 
 

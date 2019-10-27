@@ -2,11 +2,11 @@ import numpy as np
 from preprocessing import *
 from logreg import *
 from split_data import *
-from proj1_helpers import *
+from helpers import *
 from classification_accuracy import *
 from create_data_with_jet import *
 from build_polynomial import *
-DATA_TRAIN_PATH = '/Users/arthurbabey/Documents/master2/ML/ML_course/projects/project1/data/train.csv'
+DATA_TRAIN_PATH = 'C:/Users/joeld/Desktop/EPFL/machine learning/AIAIaie/data/train.csv'
 y, tX, ids_train = load_csv_data(DATA_TRAIN_PATH)
 
 
@@ -20,6 +20,7 @@ trainx,trainy,idstrain,validationx,validationy,idstest = split_data(tX, y, ids_t
                 [tx_2_train, y_2_train, tx_2_test, y_2_test, ids_2_train, ids_2_test],
                 [tx_3_train, y_3_train, tx_3_test, y_3_test, ids_3_train, ids_3_test]]
 """
+
 
 
 data_jetnum = create_data_with_jet(trainx,trainy, idstrain, validationx, validationy, idstest)
@@ -55,7 +56,7 @@ for i in range(4):
 
     #pour utiliser penalized ajouter paramètre 'penalized' dans running_gradient
     
-    weight = running_gradient(data_jet[i,1], data_jet[i,0],w, lambda_)
+    weight = running_gradient(data_jet[i,1], data_jet[i,0],w, lambda_, 'penalized')
 
     y_pred = predict_labels(weight, data_jet[i,2])
     y_preds = np.append(y_preds, y_pred)
