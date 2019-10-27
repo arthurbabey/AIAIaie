@@ -15,10 +15,11 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
         
         #update weights
         w = w-gamma*gradient
-
         # store loss
         losses.append(loss)
         
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
         #converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
             break
@@ -31,8 +32,10 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     """Stochastic gradient descent algorithm."""
     # ***************************************************
     batch_size = 1
+    w = initial_w
     # Define parameter to store loss
     losses = []
+    
     for n_iter in range(max_iters):
         #calculate gradient using minibatch
         for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
@@ -44,6 +47,9 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
 
         # store w and loss
         losses.append(loss)
+        
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
         #converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
             break
@@ -94,10 +100,12 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     w = initial_w
 
     # start gradient descent
-    for iter in range(max_iter):
+    for n_iter in range(max_iters):
         # get loss and update w using logistic regression.
         loss, w = learning_by_log_regression(y, tx, w, batch_size, gamma)
-
+        
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
         # converge criterion
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
@@ -119,10 +127,12 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
     w = initial_w
 
     # start gradient descent
-    for iter in range(max_iter):
+    for n_iter in range(max_iters):
         # get loss and update w using regularized logistic regression.
-        loss, w = learning_by_penalized_gradient(y, tx, w, lambda_, batch_size)
+        loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_, batch_size)
 
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))        
         # converge criterion
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
