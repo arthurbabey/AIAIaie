@@ -3,7 +3,7 @@
 
 import numpy as np
 
-def split_data(x, y, ratio, seed=1):
+def split_data(x, y, ids, ratio, seed=1):
     """
     split the dataset based on the split ratio. If ratio is 0.8 
     you will have 80% of your data set dedicated to training 
@@ -23,8 +23,10 @@ def split_data(x, y, ratio, seed=1):
 
     x_train = x[train_ind]
     y_train = y[train_ind]
+    ids_train =ids[train_ind]
 
     x_test = x[test_ind]
     y_test = y[test_ind]
+    ids_test = ids[test_ind]
 
-    return x_train, y_train, x_test, y_test
+    return x_train, y_train, ids_train, x_test, y_test, ids_test
