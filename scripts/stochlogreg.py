@@ -41,15 +41,14 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     # ***************************************************
 
 
-def learning_by_log_regression(y, tx, w, batch_size, gamma):
+def learning_by_log_regression(y, tx, w, minibatch_y, minibatch_x, gamma):
     """Stochastic gradient descent algorithm."""
     # ***************************************************
     
-    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-        gradient = calculate_gradient(minibatch_y, minibatch_tx, w)
-        loss = calculate_loss(minibatch_y, minibatch_tx, w)
-    gradient = gradient/batch_size
-    loss = loss/batch_size
+    gradient = calculate_gradient(minibatch_y, minibatch_x, w)
+    loss = calculate_loss(minibatch_y, minibatch_x, w)
+    gradient = gradient/len(minibatch_y)
+    loss = loss/len(minibatch_y)
     
     w = w-gamma*gradient
 
@@ -101,25 +100,25 @@ def learning_by_newton_method(y, tx, w, gamma):
     
 
 
-def penalized_logistic_regression(y, tx, w, lambda_,batch_size):
+def penalized_logistic_regression(y, tx, w, lambda_):
     """return the loss, gradient, and hessian."""
     # ***************************************************
-    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-        gradient = calculate_gradient(minibatch_y, minibatch_tx, w)+lambda_*w
-        loss = calculate_loss(minibatch_y, minibatch_tx, w)
-    gradient = gradient/batch_size
-    loss = loss/batch_size
+    ind = np.random.choice(len(y))
+    stochy = np.array(y[ind],ndmin=2)
+    stochx = np.array(tx[ind],ndmin=2)
+    gradient = calculate_gradient(stochy, stochx, w)+lambda_*w
+    loss = calculate_loss(stochy, stochx, w)
     return loss, gradient
     # ***************************************************
 
 
-def learning_by_penalized_gradient(y, tx, w, gamma, lambda_,batch_size):
+def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
     """
     Do one step of gradient descent, using the penalized logistic regression.
     Return the loss and updated w.
     """
     # ***************************************************
-    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_,batch_size)
+    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_)
     w = w - gamma*gradient
 
     return loss, w
@@ -134,32 +133,34 @@ def running_gradient(y, tx, lambda_, method='log'):
     Return the loss and final weights.
     """
     # ***************************************************
-    batch_size = 32
-    max_iter = 1000
-    gamma = 0.01
+    max_iter = 10000                              
+    gamma = 1e-4
     threshold = 1e-8
     losses = []
+    
     w = np.zeros((tx.shape[1], 1))
 
     # start gradient descent
-    for iter in range(max_iter):
+    for n_iter in range(max_iter):
         # get loss and update w.
         if method == 'log':
-            loss, w = learning_by_log_regression(y, tx, w, batch_size, gamma)
+            loss, w = learning_by_log_regression(y, tx, w, gamma)
         if method == 'penalized':
-            loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_, batch_size)
+            loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
         if method == 'newton':
             loss, w = learning_by_newton_method(y, tx, w, gamma)
         # log info
 
-        if iter % 100 == 0:
+        if n_iter % 100 == 0:
             #print(w)
-            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
         # converge criterion
+        #if len(losses) == 1000:
+         #   break
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
-            
+           
     return loss, w
     # ***************************************************
 

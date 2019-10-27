@@ -23,8 +23,8 @@ def remove_features_with_too_many_missing_values(tX,proportion):
 
     delete_ind = delete_ind.astype(int)
     data_removed_features = np.delete(data_removed_features,delete_ind, axis =1)
-    #print(len(delete_ind), 'features removed','(features number: ', delete_ind, ')')
-    #print('new shape of data:',data_removed_features.shape)
+    print(len(delete_ind), 'features removed','(features number: ', delete_ind, ')')
+    print('new shape of data:',data_removed_features.shape)
     return data_removed_features
 
 #cool = remove_features_with_too_many_missing_values(tX,0.66)
