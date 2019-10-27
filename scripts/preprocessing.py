@@ -50,6 +50,23 @@ def replace_missing_values_with_global_mean(tX):
 #print(tX[0:50,0])
 
 
+def replace_missing_values_with_mean_wrt_label(tX, labels):
+
+    data_with_means_for_missing_values = np.copy(tX)
+    #print(range(0,len(tX[0,:])))
+    for feature_number in range(0,len(tX[0,:])):
+        #print(feature_number)
+        mask = (tX[:,feature_number] == -999.)
+        mask_no_boson = (labels == -1) * mask
+        mask_boson = (labels == 1) * mask
+        data_with_means_for_missing_values[mask_no_boson,feature_number] = np.mean(data_with_means_for_missing_values[(labels == -1) * ~mask,feature_number])
+        data_with_means_for_missing_values[mask_boson,feature_number] = np.mean(data_with_means_for_missing_values[(labels == 1) * ~mask,feature_number])
+        #print ('mean = ', np.mean(data_with_means_for_missing_values[~mask,feature_number]))
+    return data_with_means_for_missing_values
+
+
+
+
 def Z_score_of_each_feature(tX):
     Standardized_data = np.copy(tX)
     for feature_number in range(0,len(tX[0,:])):
@@ -63,7 +80,8 @@ def Z_score_of_each_feature(tX):
 def preprocess_(tX, y, threshold):
 
     Data = remove_features_with_too_many_missing_values(tX,threshold)
-    Data = replace_missing_values_with_global_mean(Data)
+    #Data = replace_missing_values_with_global_mean(Data)
+    Data = replace_missing_values_with_mean_wrt_label(Data, y)
     Data = Z_score_of_each_feature(Data)
     y[y == -1] = 0
 
