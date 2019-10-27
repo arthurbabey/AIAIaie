@@ -80,7 +80,8 @@ def Z_score_of_each_feature(tX):
 def preprocess_(tX, y, threshold):
 
     Data = remove_features_with_too_many_missing_values(tX,threshold)
-    Data = replace_missing_values_with_global_mean(Data)
+    #Data = replace_missing_values_with_global_mean(Data)
+    Data = replace_missing_values_with_mean_wrt_label(Data, y)
     Data = Z_score_of_each_feature(Data)
     y[y == -1] = 0
 
