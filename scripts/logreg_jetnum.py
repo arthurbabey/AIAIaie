@@ -36,6 +36,7 @@ data_jetnum = np.asarray(data_jetnum)
 """
 
 lambda_ = 0.1 #paramètre pour penalized_logistic_regression
+degree = 2
 ids_pred = []
 y_preds = []
 yvalidations = []
@@ -45,8 +46,8 @@ yvalidations = []
 for i in range(4):
 
     data_jet = np.copy(data_jetnum)
-    data_jet[i,0] = build_poly(data_jet[i,0], 2)
-    data_jet[i,2] = build_poly(data_jet[i,2], 2)
+    data_jet[i,0] = build_poly(data_jet[i,0], degree)
+    data_jet[i,2] = build_poly(data_jet[i,2], degree)
 
     w = np.zeros(len(data_jet[i,0][0,:]))
 
