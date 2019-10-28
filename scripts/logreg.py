@@ -3,18 +3,43 @@ from helpers import batch_iter
 import time
 
 
-def sigmoid(t):
-    """apply sigmoid function on t."""
-    # ***************************************************
-    return 1 / (1 + np.exp(-t))
-    # ***************************************************
+#def sigmoid(t):
+#    """apply sigmoid function on t."""
+#    # ***************************************************
+#    return 1 / (1 + np.exp(-t))
+#   # ***************************************************
+
+def sigmoid(x):
+    if(x.max() < 710):
+        #print('pas doveflowlol')
+        return (1 - (1/(1 + np.exp(x))))
+    else:
+        #print('ELSE')
+        non_overflow = np.where(x < 710)
+        overflow = np.where(x >= 710)
+        result = np.zeros(x.shape)
+        result[overflow] = 1
+        result[non_overflow] = (1 - (1/(1 + np.exp(x[non_overflow]))))
+        return result
 
 
 def calculate_loss(y, tx, w):
     """compute the cost by negative log likelihood."""
     # ***************************************************
 
-    return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)
+    s = sigmoid(np.matmul(tx,w))
+
+    s[s==0] = 0.000001
+    s[s==1] = 0.999999
+
+    t = np.log(s)
+    u = np.log(1 - s)
+
+
+    return  -np.sum(y*t  + (1-y)*u)    
+      
+    
+    #return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)
 
     # ***************************************************
 
