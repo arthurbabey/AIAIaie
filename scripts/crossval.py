@@ -1,5 +1,9 @@
 from functions_for_implementations import compute_mse
+from ridge_regression import ridge_regression
+from logreg import *
 from build_polynomial import build_poly
+from classification_accuracy import *
+from helpers import *
 import numpy as np
 
 
@@ -41,6 +45,44 @@ def cross_validation(y, x, k_indices, k, lambda_, degree):
     loss_te = np.sqrt(2*compute_mse(y_test,x_test_poly, w))
     # ***************************************************
     return loss_tr, loss_te
+
+def cross_validation_log_reg(y, x, k_indices, k, lambda_, degree, method='penalized'):
+    """return the classification accuracy of logistic regression."""
+    # ***************************************************
+    # get k'th subgroup in test, others in train
+    x_test = x[k_indices[k]]
+    y_test = y[k_indices[k]]
+    
+    ind = np.linspace(0,k_indices.shape[0]-1,k_indices.shape[0], dtype = np.int64)
+    ind = np.delete(ind,k)
+    
+    new_ind = np.ravel(k_indices[ind])
+    x_train = x[new_ind]
+    y_train = y[new_ind]
+    
+
+    #form data with polynomial degree
+    x_test_poly = build_poly(x_test,degree)
+    x_train_poly = build_poly(x_train,degree)
+    print(x_train_poly.shape,'***********************')
+    
+    #init weights
+    
+    initial_w = np.zeros((x_train_poly.shape[1]))
+    print(initial_w.shape,'***********************')
+    #find weights
+    w = running_gradient(y_train, x_train_poly, initial_w, lambda_, method)
+    
+
+    # calculate the classification accuracy for train and test data
+    y_pred = predict_labels(w,x_test_poly)
+    test_score= calculate_classification_accuracy(y_test, y_pred) 
+    
+    y_pred_train = predict_labels(w,x_train_poly)
+    train_score= calculate_classification_accuracy(y_train, y_pred_train)    
+    
+    # ***************************************************
+    return test_score, train_score
 
 
 def cross_validation_demo():
