@@ -6,7 +6,8 @@ from helpers import *
 from classification_accuracy import *
 from create_data_with_jet import *
 from build_polynomial import *
-DATA_TRAIN_PATH = '/Users/arthurbabey/Documents/master2/ML/ML_course/projects/project1/data/train.csv'
+DATA_TRAIN_PATH = 'C:/Users/joeld/Desktop/EPFL/machine learning/AIAIaie/data/train.csv'
+#DATA_TRAIN_PATH = '/Users/arthurbabey/Documents/master2/ML/ML_course/projects/project1/data/train.csv'
 y, tX, ids_train = load_csv_data(DATA_TRAIN_PATH)
 
 
@@ -36,8 +37,8 @@ data_jetnum = np.asarray(data_jetnum)
 
 """
 
-lambda_ = 0.05 #paramètre pour penalized_logistic_regression
-degree = 3
+lambda_ = 0.1 #paramètre pour penalized_logistic_regression
+degree = 2
 ids_pred = []
 y_preds = []
 yvalidations = []
