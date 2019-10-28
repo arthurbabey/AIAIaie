@@ -14,7 +14,7 @@ def load_csv_data(data_path, sub_sample=False):
     # convert class labels from strings to binary (-1,1)
     yb = np.ones(len(y))
     yb[np.where(y=='b')] = -1
-    
+
     # sub-sample
     if sub_sample:
         yb = yb[::50]
@@ -27,9 +27,13 @@ def load_csv_data(data_path, sub_sample=False):
 def predict_labels(weights, data):
     """Generates class predictions given weights, and a test data matrix"""
     y_pred = np.dot(data, weights)
-    y_pred[np.where(y_pred <= 0)] = -1
-    y_pred[np.where(y_pred > 0)] = 1
-    
+    #print(y_pred)
+    y_pred = 1 / (1 + np.exp(-y_pred))
+    #print(y_pred)
+
+    y_pred[np.where(y_pred <= 0.5)] = -1
+    y_pred[np.where(y_pred > 0.5)] = 1
+
     return y_pred
 
 
@@ -46,14 +50,14 @@ def create_csv_submission(ids, y_pred, name):
         writer.writeheader()
         for r1, r2 in zip(ids, y_pred):
             writer.writerow({'Id':int(r1),'Prediction':int(r2)})
-            
-            
+
+
 def standardize(x):
     ''' fill your code in here...
     '''
     centered_data = x - np.mean(x, axis=0)
     std_data = centered_data / np.std(centered_data, axis=0)
-    
+
     return std_data
 
 
@@ -82,5 +86,3 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         end_index = min((batch_num + 1) * batch_size, data_size)
         if start_index != end_index:
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
-
-
