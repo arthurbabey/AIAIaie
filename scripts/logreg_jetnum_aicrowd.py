@@ -6,8 +6,8 @@ from helpers import *
 from classification_accuracy import *
 from create_data_with_jet import *
 from build_polynomial import *
-DATA_TRAIN_PATH = '/Users/arthurbabey/Documents/master2/ML/ML_course/projects/project1/data/train.csv'
-DATA_TEST_PATH = '/Users/arthurbabey/Documents/master2/ML/ML_course/projects/project1/data/test.csv'
+DATA_TRAIN_PATH = 'C:/Users/joeld/Desktop/EPFL/machine learning/AIAIaie/data/train.csv'
+DATA_TEST_PATH = 'C:/Users/joeld/Desktop/EPFL/machine learning/AIAIaie/data/test.csv'
 
 y, tX, ids_train = load_csv_data(DATA_TRAIN_PATH)
 ytest, tXtest, ids_test = load_csv_data(DATA_TEST_PATH)
@@ -32,7 +32,7 @@ for i in range(4):
 
     w = np.zeros(len(data_jet[i,0][0,:]))
 
-    weight = running_gradient(data_jet[i,1], data_jet[i,0], w, lambda_, 'gradient')
+    weight = running_gradient(data_jet[i,1], data_jet[i,0], w, lambda_, 'newton')
     y_pred = predict_labels(weight, data_jet[i,2])
     y_preds = np.append(y_preds, y_pred)
     ids_pred = np.append(ids_pred,data_jet[i,5])

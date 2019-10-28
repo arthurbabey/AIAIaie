@@ -73,7 +73,7 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         <DO-SOMETHING>
     """
     data_size = len(y)
-
+    reset_num = 0
     if shuffle:
         shuffle_indices = np.random.permutation(np.arange(data_size))
         shuffled_y = y[shuffle_indices]
@@ -82,7 +82,9 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         shuffled_y = y
         shuffled_tx = tx
     for batch_num in range(num_batches):
-        start_index = batch_num * batch_size
-        end_index = min((batch_num + 1) * batch_size, data_size)
+        start_index = (batch_num-reset_num) * batch_size
+        end_index = min((batch_num-reset_num + 1) * batch_size, data_size)
+        if min((batch_num-reset_num + 1) * batch_size, data_size) == data_size:
+            reset_num = batch_num+1
         if start_index != end_index:
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
