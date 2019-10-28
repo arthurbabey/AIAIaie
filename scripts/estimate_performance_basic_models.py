@@ -51,7 +51,6 @@ lambda_ = 0.01
 degree = 1
 max_iters = 5000
 gamma = 0.01
-batch_size = 5000
 ids_pred = []
 y_preds = []
 ids_predtrain = []
