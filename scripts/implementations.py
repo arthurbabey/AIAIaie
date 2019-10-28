@@ -17,7 +17,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
         w = w-gamma*gradient
         # store loss
         losses.append(loss)
-        
+
         if n_iter % 100 == 0:
             print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
         #converge criterion

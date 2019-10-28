@@ -31,7 +31,20 @@ def predict_labels(weights, data):
     y_pred = 1 / (1 + np.exp(-y_pred))
     #print(y_pred)
 
-    y_pred[np.where(y_pred <= 0.5)] = -1
+    y_pred[np.where(y_pred <= 0.5)] = 0
+    y_pred[np.where(y_pred > 0.5)] = 1
+
+    return y_pred
+
+
+def predict_labels_notlog(weights, data):
+    """Generates class predictions given weights, and a test data matrix"""
+    y_pred = np.dot(data, weights)
+    #print(y_pred)
+
+    #print(y_pred)
+
+    y_pred[np.where(y_pred <= 0.5)] = 0
     y_pred[np.where(y_pred > 0.5)] = 1
 
     return y_pred
