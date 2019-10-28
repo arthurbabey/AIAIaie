@@ -1,5 +1,4 @@
 from functions_for_implementations import compute_mse
-from ridge_regression import ridge_regression
 from build_polynomial import build_poly
 import numpy as np
 
