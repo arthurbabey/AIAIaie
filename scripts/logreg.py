@@ -125,11 +125,11 @@ def running_gradient(y, tx, w, lambda_, method='penalized'):
     Return the loss and final weights.
     """
     # ***************************************************
-    max_iter = 10000
-    gamma = 0.1
+    max_iter = 5000
+    gamma = 0.01
 
     threshold = 1e-8
-
+    
     losses = []
     batch_size = 5000
     n_iter = 0

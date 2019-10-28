@@ -38,9 +38,8 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
     for minibatch_y, minibatch_tx in batch_iter(y, tx, 32):
         <DO-SOMETHING>
     """
-    # ***************************************************
     data_size = len(y)
-
+    reset_num = 0
     if shuffle:
         shuffle_indices = np.random.permutation(np.arange(data_size))
         shuffled_y = y[shuffle_indices]
@@ -49,11 +48,12 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         shuffled_y = y
         shuffled_tx = tx
     for batch_num in range(num_batches):
-        start_index = batch_num * batch_size
-        end_index = min((batch_num + 1) * batch_size, data_size)
+        start_index = (batch_num-reset_num) * batch_size
+        end_index = min((batch_num-reset_num + 1) * batch_size, data_size)
+        if min((batch_num-reset_num + 1) * batch_size, data_size) == data_size:
+            reset_num = batch_num+1
         if start_index != end_index:
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
-    # ***************************************************            
             
 
 
@@ -81,15 +81,14 @@ def calculate_gradient(y, tx, w):
     
 
     
-def learning_by_log_regression(y, tx, w, batch_size, gamma):
+def learning_by_log_regression(y, tx, w, gamma):
     """Stochastic gradient descent algorithm."""
     # ***************************************************
     #calculate gradient using minibatch
-    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-        gradient = calculate_gradient(minibatch_y, minibatch_tx, w)
-        loss = calculate_loss(minibatch_y, minibatch_tx, w)
-    gradient = gradient/batch_size
-    loss = loss/batch_size
+    gradient = calculate_gradient(y, tx, w)
+    loss = calculate_loss(y, tx, w)
+    gradient = gradient/len(y)
+    loss = loss/len(y)
     
     w = w-gamma*gradient
 
@@ -98,15 +97,14 @@ def learning_by_log_regression(y, tx, w, batch_size, gamma):
     
 
 
-def penalized_logistic_regression(y, tx, w, lambda_,batch_size):
+def penalized_logistic_regression(y, tx, w, lambda_):
     """return the loss, gradient"""
     # ***************************************************
-    #calculate gradient using minibatch
-    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-        gradient = calculate_gradient(minibatch_y, minibatch_tx, w)+lambda_*w
-        loss = calculate_loss(minibatch_y, minibatch_tx, w)
-    gradient = gradient/batch_size
-    loss = loss/batch_size
+    #calculate gradient 
+    gradient = calculate_gradient(y, tx, w)+lambda_*w
+    loss = calculate_loss(y, tx, w)
+    gradient = gradient/len(y)
+    loss = loss/len(y)
     
     return loss, gradient
     # ***************************************************
@@ -120,7 +118,7 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_,batch_size):
     """
     # ***************************************************
     #calculate loss and gradient
-    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_,batch_size)
+    loss, gradient = penalized_logistic_regression(y, tx, w, lambda_)
     
     #update the weights
     w = w - gamma*gradient

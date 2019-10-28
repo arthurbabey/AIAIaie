@@ -2,8 +2,7 @@
 """Applying functions on the separeted by jet dataset ."""
 
 # Useful starting lines
-import numpy as np
-from ridge_regression import *
+import numpy as np 
 from preprocessing import *
 from helpers import *
 

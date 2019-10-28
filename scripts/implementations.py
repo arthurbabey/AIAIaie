@@ -36,12 +36,12 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     # Define parameter to store loss
     losses = []
     
-    for n_iter in range(max_iters):
+    n_iter = 0
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size, num_batches=max_iters):
         #calculate gradient using minibatch
-        for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size):
-            gradient = compute_stoch_gradient(minibatch_y, minibatch_tx, w)
-        gradient = gradient/batch_size
-        loss = compute_mse(y, tx, w)
+        gradient = compute_stoch_gradient(minibatch_y, minibatch_tx, w)
+        gradient = gradient/len(minibatch_y)
+        loss = compute_mse(minibatch_y, minibatch_tx, w)/len(minibatch_y)
 
         w = w-gamma*gradient
 
@@ -53,7 +53,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
         #converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
             break
-            
+        n_iter +=1    
     return w, losses[-1]
     # ***************************************************
     
@@ -81,7 +81,6 @@ def ridge_regression(y, tx, lambda_):
     a = np.matmul(np.transpose(tx),tx)+(2*len(y)*lambda_*np.eye(tx.shape[1]))
     b = np.matmul(np.transpose(tx),y)
     w = np.linalg.solve(a,b)
-    
     #compute loss
     loss = compute_mse(y, tx, w)
     return w, loss
@@ -100,9 +99,10 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     w = initial_w
 
     # start gradient descent
-    for n_iter in range(max_iters):
+    n_iter = 0
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size, num_batches=max_iters):
         # get loss and update w using logistic regression.
-        loss, w = learning_by_log_regression(y, tx, w, batch_size, gamma)
+        loss, w = learning_by_log_regression(minibatch_y, minibatch_tx, w, gamma)
         
         if n_iter % 100 == 0:
             print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
@@ -110,7 +110,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
             break
-            
+        n_iter +=1
     return w, losses[-1] 
     # ***************************************************    
     
@@ -127,9 +127,10 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
     w = initial_w
 
     # start gradient descent
-    for n_iter in range(max_iters):
+    n_iter = 0
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size, num_batches=max_iters):
         # get loss and update w using regularized logistic regression.
-        loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_, batch_size)
+        loss, w = learning_by_penalized_gradient(minibatch_y, minibatch_tx, w, gamma, lambda_)
 
         if n_iter % 100 == 0:
             print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))        
@@ -137,7 +138,7 @@ def reg_logistic_regression(y, tx, lambda_ , initial_w, max_iters, gamma):
         losses.append(loss)
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < 1e-8:
             break
-            
+        n_iter +=1
     return w, losses[-1] 
     # *************************************************** 
     
