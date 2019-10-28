@@ -11,7 +11,7 @@ from helpers import *
 
 
 
-DATA_TRAIN_PATH = 'C:/Users/joeld/Desktop/EPFL/machine learning/AIAIaie/data/train.csv' # TODO: download train data and supply path here  
+DATA_TRAIN_PATH = 'train.csv'
 y, tX, ids = load_csv_data(DATA_TRAIN_PATH)
 
 #preprocess data, removing features with too many -999
