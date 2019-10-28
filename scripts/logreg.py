@@ -127,7 +127,9 @@ def running_gradient(y, tx, w, lambda_, method='penalized'):
     # ***************************************************
     max_iter = 10000
     gamma = 0.1
-    threshold = 1e-16
+
+    threshold = 1e-8
+
     losses = []
     batch_size = 5000
     n_iter = 0
