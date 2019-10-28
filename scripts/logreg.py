@@ -3,43 +3,26 @@ from helpers import batch_iter
 import time
 
 
-#def sigmoid(t):
-#    """apply sigmoid function on t."""
-#    # ***************************************************
-#    return 1 / (1 + np.exp(-t))
-#   # ***************************************************
-
-def sigmoid(x):
-    if(x.max() < 710):
-        #print('pas doveflowlol')
-        return (1 - (1/(1 + np.exp(x))))
-    else:
-        #print('ELSE')
-        non_overflow = np.where(x < 710)
-        overflow = np.where(x >= 710)
-        result = np.zeros(x.shape)
-        result[overflow] = 1
-        result[non_overflow] = (1 - (1/(1 + np.exp(x[non_overflow]))))
-        return result
+def sigmoid(t):
+    """apply sigmoid function on t."""
+    # ***************************************************
+    return 1 / (1 + np.exp(-t))
+    # ***************************************************
 
 
 def calculate_loss(y, tx, w):
     """compute the cost by negative log likelihood."""
     # ***************************************************
-
     s = sigmoid(np.matmul(tx,w))
 
+    #avoiding overflow
     s[s==0] = 0.000001
     s[s==1] = 0.999999
 
     t = np.log(s)
     u = np.log(1 - s)
 
-
-    return  -np.sum(y*t  + (1-y)*u)    
-      
-    
-    #return np.sum(np.log(1 + np.exp(np.matmul(tx, w))) - np.matmul(tx, w)*y)
+    return  -np.sum(y*t  + (1-y)*u)  /len(y)  
 
     # ***************************************************
 
@@ -48,7 +31,7 @@ def calculate_loss(y, tx, w):
 def calculate_gradient(y, tx, w):
     """compute the gradient of loss."""
     # ***************************************************
-    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)
+    return np.matmul(np.transpose(tx), sigmoid(np.matmul(tx, w))-y)/len(y)
     # ***************************************************
 
 
@@ -60,32 +43,13 @@ def learning_by_gradient_descent(y, tx, w, gamma):
     """
     # ***************************************************
 
-    #print(y.shape), print(tx.shape), print(w.shape)
-    #y = np.array(y, ndmin=2)
-    loss = calculate_loss(y, tx, w)/len(y)
-    gradient = calculate_gradient(y, tx, w)/len(y)
+    loss = calculate_loss(y, tx, w)
+    gradient = calculate_gradient(y, tx, w)
 
     w = w - gamma*gradient
 
     return loss, w
     # ***************************************************
-
-
-def learning_by_log_regression(y, tx, w, gamma):
-    """Stochastic gradient descent algorithm."""
-    # ***************************************************
-
-    ind = np.random.choice(len(y))
-    stochy = np.array(y[ind],ndmin=2)
-    stochx = np.array(tx[ind],ndmin=2)
-    gradient = calculate_gradient(stochy, stochx, w)
-    loss = calculate_loss(stochy, stochx, w)
-
-    w = w-gamma*gradient
-
-    return loss, w
-    # ***************************************************
-
 
 
 
@@ -134,11 +98,8 @@ def learning_by_newton_method(y, tx, w, gamma):
 def penalized_logistic_regression(y, tx, w, lambda_):
     """return the loss, gradient, and hessian."""
     # ***************************************************
-    ind = np.random.choice(len(y))
-    stochy = np.array(y[ind],ndmin=2)
-    stochx = np.array(tx[ind],ndmin=2)
-    gradient = calculate_gradient(stochy, stochx, w)+lambda_*w
-    loss = calculate_loss(stochy, stochx, w)
+    gradient = calculate_gradient(y, tx, w)+lambda_*w
+    loss = calculate_loss(y, tx, w)
     return loss, gradient
     # ***************************************************
 
@@ -157,33 +118,29 @@ def learning_by_penalized_gradient(y, tx, w, gamma, lambda_):
 
 
 
-def running_gradient(y, tx, w, lambda_, method='log'):
+def running_gradient(y, tx, w, lambda_, method='penalized'):
     """
     run gradient descent, using logistic regression,
     penalized log regression or newton method.
     Return the loss and final weights.
     """
     # ***************************************************
-    max_iter = 8000
-    gamma = 0.01
+    max_iter = 10000
+    gamma = 0.1
     threshold = 1e-8
     losses = []
-
-    #w = np.zeros((tx.shape[1], 1))
-
+    batch_size = 5000
+    n_iter = 0
     # start gradient descent
-    for n_iter in range(max_iter):
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size, num_batches=max_iter):
         # get loss and update w.
-        if method == 'log':
-            loss, w = learning_by_log_regression(y, tx, w, gamma)
         if method == 'penalized':
-            loss, w = learning_by_penalized_gradient(y, tx, w, gamma, lambda_)
+            loss, w = learning_by_penalized_gradient(minibatch_y, minibatch_tx, w, gamma, lambda_)
         if method == 'newton':
-            loss, w = learning_by_newton_method(y, tx, w, gamma)
+            loss, w = learning_by_newton_method(minibatch_y, minibatch_tx, w, gamma)
         if method == 'gradient':
-            loss, w = learning_by_gradient_descent(y, tx, w, gamma)
+            loss, w = learning_by_gradient_descent(minibatch_y, minibatch_tx, w, gamma)
         # log info
-
         if n_iter % 10 == 0:
             #print(w)
             print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
@@ -191,8 +148,8 @@ def running_gradient(y, tx, w, lambda_, method='log'):
         #if len(losses) == 1000:
          #   break
         losses.append(loss)
-        #if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
-        #    break
-
+        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
+            break
+        n_iter +=1 
     return w
     # ***************************************************
